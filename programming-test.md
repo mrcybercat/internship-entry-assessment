@@ -100,12 +100,80 @@ related to user interface and data are not coupled and can be developed independ
 
 I will provide example of each type of pattern
 
-Creational: Factory
+Creational: Builder
+```mermaid
+classDiagram
+
+    ConcreteObjDirector o-- ConcreteObjBuilder
+    Director <|-- ConcreteObj1Director
+    ConcreteObj1Builder ..> ConcreteObj
+
+    class ConcreteObjDirector{
+        + construct(ConcreteObj1Builder builder)
+    }
+    class Director{
+        <<Interface>>
+    }
+    class ConcreteObj
+
+    class ConcreteObjBuilder{
+        +buildStep1()
+        +buildStep2()
+        +getResutl()    
+    }
+```
+Builder is very useful when you are presented with complex object that require complex, sometimes sequence sensitive 
+initialization. The pattern other then an object itself consists from Builder, Director interface and concrete directors.
+Builder contains the method necessary for initializing object, while concrete Directors contain predefined initialization
+sequences. One could also just use Builder as a type of Factory method. I used it for initializing an image compression algorithm workflow 
+from a number algorithm steps objects. This allowed for easy construction of any algorithm as long as individual data
+processing steps were already in place. 
 
 Structural: Facade
 
+```mermaid
+classDiagram
+    Client --> Facade
+    Facade ..> SubSystem1
+    Facade ..> SubSystem2
+    Facade ..> SubSystem3
+    
+    class Client
+    class Facade
+    class SubSystem1
+    class SubSystem2
+    class SubSystem3
+```
+Facade is a straight forward pattern where we are presented with a problem of complex business logic perhaps from 3rd party
+dependencies like image and video libraries. Facade will while limiting the extent to which client is able to interact with 
+the subsystem only expose relevant details to the client. I have used it my project exactly for this reason where my
+software component handling metrics needed to interact with compression algorithm, and instead of coupling systems directly 
+an intermediary was introduced.
+
 Behavioral: Observer
 
+```mermaid
+classDiagram
+
+    Publisher o-- Subscriber
+    Subscriber <-- Publisher
+
+    class Publisher{
+        - observers Observer[]
+        + notify()
+        + subscribe(s: Subscriber)
+        + unsubscribe(s: Subscriber) 
+    }
+
+    class Subscriber{
+        + update()
+    }
+```
+Observer pattern allows for one instance to send signals to interested components one a certain event occurs. I have used it
+while attempting to develop an ad-hoc game engine. The idea was that game world consists of entities and systems, whenever the
+system would detect an event of interest for the entity it would be updated accordingly. This is realistically the most 
+convenient way to achieve this behaviour and as I later found out many engines use Observer pattern as a basis for any development.
+Like Godot
 ---
 
 ## Exercise 3
@@ -135,11 +203,76 @@ D --|> A
 B --|> A
 C --|> B
 ```
+Bellow the Java and C# code is provided for the presented UML diagram. Every public class is naturally would be localed 
+in a separate file in case of Java 
+```java
+public abstract class ObjectA {
+
+    protected String name;
+
+    public void PrintName() {}
+
+}
+
+public class ObjectB extends ObjectA {
+    private void PrintName(String message) {}
+}
+
+public class ObjectD extends ObjectA {}
+
+public class ObjectC extends ObjectB {
+    public void PrintName(String message) {}
+}
+```
+In case of C# putting every class in the same file is permissible, if .
+```cs
+using System;
+
+public abstract class ObjectA
+{
+    protected string name;
+    
+    public void PrintName(){} 
+
+    public static void Main(string[] args)
+    {
+
+    }
+}
+
+public class ObjectB : ObjectA{
+    private void PrintName(String message){} 
+}
+    
+public class ObjectD : ObjectA{
+}
+    
+public class ObjectC : ObjectB{
+    public void PrintName(String message){} 
+}
+```
 
 ### 2. **Key Questions**  
    - Are you able to directly create a new instance of `ObjectA`? Please explain your answer.  
-   - Given an instance of `ObjectC`, are you able to call the method `PrintMessage` defined in `ObjectB`? Please explain your answer.  
+
+Due to the fact that `ObjectA` is defined in the notation as an abstract class it is not possible to create an instance of this class.    
+   - Given an instance of `ObjectC`, are you able to call the method `PrintMessage` defined in `ObjectB`? Please explain your answer.
+
+It is impossible to call the method `PrintMessage` of `ObjectB`, despite `ObjectC` being a child of `ObjectB` due to private assess modifier,
+which means the method is only accessible within  class `ObjectB`    
    - Try to explain as many key features of object-oriented programming as you can find in this example.
+Inheritance 
+
+Overriding 
+
+Overloading
+
+Polymorphism
+
+Encapsulation
+
+Abstraction
+
 
 ---
 
@@ -151,13 +284,21 @@ This exercise focuses on strategies for working with existing code bases and ens
 
 ### 1. **Working with Existing Code**  
 - How would you approach understanding and contributing to an existing code base with minimal disruption?  
+
+
 - What practices would you follow to ensure your changes integrate well with the current structure?  
 
 ### 2. **Ensuring Maintainability**  
 - What techniques would you use to keep the code base clean, modular, and easy to maintain as new features are added?  
+
+
 - How would you handle code documentation and testing to support long-term maintainability?  
 
 ### 3. **Balancing Flexibility and Stability**  
 - How would you design or refactor the software to make it flexible for future changes while ensuring the existing functionality remains stable?  
+
+
 - Which design patterns or principles would you apply to achieve this balance
+
+
 ---
