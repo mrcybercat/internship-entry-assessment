@@ -21,7 +21,6 @@ more advanced features of language like lambda expressions:
 
 ```python 
 import random
-
 for inter in range(1,101):
     rand = random.randint(2,99)
     print(str(inter) + " " + str(rand))
@@ -34,7 +33,6 @@ Bellow is the same solutions in Java, (another note  is that the boundaries of t
 and I assume both boundaries to be exclusive) 
 ```java
 import java.util.Random;
-
 class Main {
   public static void main(String[] args) {
     Random ran = new Random();
@@ -49,6 +47,21 @@ class Main {
   }
 }
 ```
+This solutions is an attempt to optimize for LOCs using Java and is 3 lines off Python solution
+```java
+import java.util.Random;
+class Main {
+    public static void main(String[] args) {
+        for(int inter = 1, rand = new Random().nextInt(101-1) + 1; inter <= 100; inter++, rand = new Random().nextInt(101-1) + 1) {
+            args[0] += inter + " " + rand  + "\n";
+            args[0] += rand % 7 == 0 ? "Lucky number\n" : "";
+            args[0] += inter % 5 == 0 ? "-----\n" : "";
+        }
+        System.out.println(args[0]);
+    }
+}
+```
+
 ---
 
 ## Exercise 2
