@@ -172,8 +172,9 @@ classDiagram
 Observer pattern allows for one instance to send signals to interested components one a certain event occurs. I have used it
 while attempting to develop an ad-hoc game engine. The idea was that game world consists of entities and systems, whenever the
 system would detect an event of interest for the entity it would be updated accordingly. This is realistically the most 
-convenient way to achieve this behaviour and as I later found out many engines use Observer pattern as a basis for any development.
-Like Godot
+convenient way to achieve this behaviour and as I later found out many engines use Observer pattern as a basis for any development,
+like Godot.
+
 ---
 
 ## Exercise 3
@@ -261,17 +262,32 @@ Due to the fact that `ObjectA` is defined in the notation as an abstract class i
 It is impossible to call the method `PrintMessage` of `ObjectB`, despite `ObjectC` being a child of `ObjectB` due to private assess modifier,
 which means the method is only accessible within  class `ObjectB`    
    - Try to explain as many key features of object-oriented programming as you can find in this example.
-Inheritance 
 
-Overriding 
+Inheritance. Every single class expect for base class `ObjectA` is an inheritor. Inheritance is a type of "IS-A" relationship
+Child classes can be treated as a super class in many cases, which is crucial for achieving low coupling and is part of 
+Liskov's substitution principle.
+Polymorphism is tied directly to the Inheritance and is a relationship, because as mentioned before inheritors can be treated as 
+any of their parents, hence are all syntactically valid:    
+```java
+ObjectC c = ObjectC();
+ObjectB c = ObjectC();
+ObjectA c = ObjectC();
+```
+Another form of polymorphism is related to methods. Overriding referees to ability to replace the superclass method's functionality
+with functionality defined in the child class. When we call this method using the instance of child class we will call child's method.
+In this example overriding wasnt explicitly present, however if `private` modifier in `ObjectB` of method `PrintMessage` was replaced 
+with `public` then `ObjectC` would be overriding this method of `ObjectB`. 
 
-Overloading
+Overloading referees to methods using the same name with different parameters, in the example that would be `PrintName(String message)` and
+`PrintName()`
 
-Polymorphism
+Encapsulation is not entirely relevant to this example but is arguably still present. Encapsulation referees to limiting  
+direct access to data if not necessity, in our case, field `name` is only accessible to inheritor classes (in case of C#) and 
+withing package (in case of Java)
 
-Encapsulation
-
-Abstraction
+Abstraction aims to provide high level, low detail interfaces to other parts of the program, this helps to reduce coupling and
+ensure components can be modified independently. In the example `ObjectA` is an abstract class which we would imagine is 
+a high level representation of all child classes
 
 
 ---
@@ -285,20 +301,58 @@ This exercise focuses on strategies for working with existing code bases and ens
 ### 1. **Working with Existing Code**  
 - How would you approach understanding and contributing to an existing code base with minimal disruption?  
 
+Understanding the code base can be done by personal inference or interacting with the team such as:     
+Asking: If it possible the great source of insight will be asking person responsible for the component of interest directly, this     
+is also should be the most time efficient option.                                                                             
+Testing: In either case test cases would provide the best vehicle to understanding the system, provided they exist, if not 
+implementing tests can be used to infer how components work. 
+Reading code: Trying to understand code directly is also necessary albeit depending on a system may pose a significant challenge.
+
+Generally when introducing new components into the system, one must design such component that its minimally contradicts 
+the SOLID principles. While principles like OCP are sometimes hard to maintain due to evolving nature of software, other
+components should not be modified without a good reason and provided a with a healthy code base most changes should stay
+fairly contained. Components introduced must be provided with test cases sufficient not only in coverage but in helping
+to understand the system develop.
 
 - What practices would you follow to ensure your changes integrate well with the current structure?  
+
+Produced software components must be documented and tested, to ensure they remain maintainable and understandable. 
+Designing component before introducing it, it is said that Future refactoring can not be substitute for a good upfront design.
+This step should generally not be sidelined and corrected in an impromptu manner when are.        
 
 ### 2. **Ensuring Maintainability**  
 - What techniques would you use to keep the code base clean, modular, and easy to maintain as new features are added?  
 
+Testing coverage and test quality must be maintained high, changes must be accepted with a code review process for a greater 
+cooperation, expertise sharing and ultimately better quality of code itself. Metrics to monitor the software product health 
+like coupling, complexity, and even naive LOCs counts can help identify emerging design erosion problems and code smells   
 
-- How would you handle code documentation and testing to support long-term maintainability?  
+- How would you handle code documentation and testing to support long-term maintainability?
+
+While it is said that code should be understandable without a documentation, achieving a great enough level of clarity for
+everything is unfeasible. Ideally each class and method should be clearly annotated for its intent and purpose. Testing should
+achieve high line coverage as well as branch coverage, but this not enough in and on itself and test should be meaningful
+testing different edge cases. If resources allow for it mutation testing can also be perform to make sure that tests that are
+in place do not produce incorrectly optimistic results  
 
 ### 3. **Balancing Flexibility and Stability**  
 - How would you design or refactor the software to make it flexible for future changes while ensuring the existing functionality remains stable?  
 
+Refactoring is an iterative process, naturally test cases should be in place to verify refactoring results but beyond that 
+if refactoring is done along the particular code smell or SOLID principle, then refactor should be limited to the components
+affected by this issue exclusively, minimising number of unintentional and disruptive changes that could be introduced.   
+No sweeping changes or redesigns that do not address the issue directly   
 
 - Which design patterns or principles would you apply to achieve this balance
-
+ 
+SOLID principle is a guiding principle to ensure software is designed with and does not lose flexibility and maintainability 
+required from a modern software product. Single Responsibility Principle is important to maintaining to avoid emergence of
+high coupling low cohesion god classes. Open Closed Principle when violated can point at missing abstraction layers.
+Linkovs Substitution Principle can identify overoptimistic generalisations and abstractions. Interface Segregation Principle
+similarly can point to overgeneralized interfaces, that may require splitting. Dependency Inversion Principle can help greatly 
+reduce overall coupling of system. 
+KISS - keep it simple stupid, complex solutions should be avoided in favour of simpler 
+once if possible. Every existing design pattern has its time and place, some more wide spread, then others. Such design patterns
+as Factory are likely to be used in many components since value of decoupling objects initialization often can improve cohesion  
 
 ---
