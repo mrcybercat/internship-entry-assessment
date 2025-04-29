@@ -119,10 +119,10 @@ classDiagram
 
     ConcreteObjDirector o-- ConcreteObjBuilder
     Director <|-- ConcreteObj1Director
-    ConcreteObj1Builder ..> ConcreteObj
+    ConcreteObjBuilder ..> ConcreteObj
 
     class ConcreteObjDirector{
-        + construct(ConcreteObj1Builder builder)
+        + construct(ConcreteObjBuilder builder)
     }
     class Director{
         <<Interface>>
