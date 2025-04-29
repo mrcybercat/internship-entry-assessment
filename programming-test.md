@@ -118,7 +118,7 @@ Creational: Builder
 classDiagram
 
     ConcreteObjDirector o-- ConcreteObjBuilder
-    Director <|-- ConcreteObj1Director
+    Director <|-- ConcreteObjDirector
     ConcreteObjBuilder ..> ConcreteObj
 
     class ConcreteObjDirector{
