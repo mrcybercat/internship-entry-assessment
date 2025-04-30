@@ -140,7 +140,102 @@ initialization. The pattern other then an object itself consists from Builder, D
 Builder contains the method necessary for initializing object, while concrete Directors contain predefined initialization
 sequences. One could also just use Builder as a type of Factory method. I used it for initializing an image compression algorithm workflow 
 from a number algorithm steps objects. This allowed for easy construction of any algorithm as long as individual data
-processing steps were already in place. 
+processing steps were already in place.
+
+Below is some code snippets in Java related to the Builder pattern.
+
+Consisting part of Algorithm object: AlgorithmStep   
+```java
+public abstract class AlgorithmStep<T extends DataClass, S extends DataClass> {
+
+    public abstract T performAlgorithmStep(S source) throws UnableToPerformStepException;
+}
+
+```
+Concrete Object: Algorithm with AlgorithmBuilder as an inner class
+```java
+public class Algorithm<T extends DataClass, S extends DataClass> {
+
+    private List<AlgorithmStep> steps;
+
+    public Algorithm(AlgorithmBuilder builder) {
+        this.steps = builder.steps;
+    }
+
+    public T executeAlgorithm(S source){
+        DataClass data = source;
+        for(AlgorithmStep step : steps){
+            data = step.performAlgorithmStep(data);
+        }
+        return (T) data;
+    }
+
+    public static class AlgorithmBuilder{
+        private List<AlgorithmStep> steps;
+
+        private AlgorithmBuilder() {
+            this.steps = new ArrayList<>();
+        }
+
+        public static AlgorithmBuilder newInstance() {
+            return new AlgorithmBuilder();
+        }
+
+        public AlgorithmBuilder addStep(AlgorithmStep step) {
+            this.steps.add(step);
+            return this;
+        }
+
+        public AlgorithmBuilder addSteps(AlgorithmStep... steps) {
+            this.steps.addAll(List.of(steps));
+            return this;
+        }
+
+        public Algorithm getAlgorithm() {
+            return new Algorithm(this);
+        }
+    }
+}
+```
+Director Interface: AlgorithmDirector
+```java
+public interface AlgorithmDirector {
+    Algorithm defineAlgorithm(Algorithm.AlgorithmBuilder builder, AlgorithmOptions options);
+}
+```
+Concrete Directors:
+```java
+public class JPEGCompressionDirector implements AlgorithmDirector {
+
+    @Override
+    public Algorithm defineAlgorithm(Algorithm.AlgorithmBuilder builder, AlgorithmOptions options) {
+        return Algorithm.AlgorithmBuilder.newInstance()
+                // compression
+                .addStep(new ReadImageFromAFileStep())
+                .addStep(new ExtractRGBFromImageStep())
+                .addStep(new ConvertRGBtoYUVStep())
+                .addStep(new DivideIntoBlocksStep(8))
+                .addStep(new ForwardDCTStep())
+                .addStep(new QuantizeBlocksStep())
+                .addStep(new FlattenBlocksZigZagStep())
+                .addStep(new RLEEncodingStep())
+                .addStep(new HuffmanEncodingStep())
+                .getAlgorithm();
+    }
+}
+
+public class VideoMetricMeasurementDirector implements AlgorithmDirector {
+    @Override
+    public Algorithm defineAlgorithm(Algorithm.AlgorithmBuilder builder, AlgorithmOptions options) {
+        return Algorithm.AlgorithmBuilder.newInstance()
+                .addStep(new ReadImageSequenceFromFileStep())
+                .addStep(new ExtractRGBDataFromImageSequenceStep())
+                .addStep(new CalculateSequentialMetricsStep(options.outputPath(), COMPREHENSIVE_IMAGE))
+                .getAlgorithm();
+    }
+}
+```
+
 
 Structural: Facade
 
