@@ -284,6 +284,106 @@ system would detect an event of interest for the entity it would be updated acco
 convenient way to achieve this behaviour and as I later found out many engines use Observer pattern as a basis for any development,
 like Godot.
 
+The observer was used in different parts of the project. Bellow is an example of possible use for event handling in C#. 
+The system I devised is almost can be thought of as 2 layer Observer pattern. Where Event class corresponds to Subscriber
+in relationship to Event manager, while being itself a compact implementation of Publisher using delegates.     
+```cs
+public abstract class Event 
+{
+    public delegate void EventHandler(EventData e);
+
+    public event EventHandler EventOccurred;
+
+    public void Notify(EventData eventData)
+    {
+        EventOccurred?.Invoke(eventData);
+    }
+
+    public void Subscribe(EventHandler eventHandler)
+    {
+        EventOccurred += eventHandler;
+    }
+
+    public void Unsubscribe(EventHandler eventHandler)
+    {
+        EventOccurred -= eventHandler;
+    }
+}
+```
+EventManager class corresponds to Publisher in the Observer pattern
+```cs
+public class EventManager 
+{
+    private readonly Dictionary<Type, Event> events = new Dictionary<Type, Event>();
+
+    public void AddEvent<T>(T eventType) where T : Event
+    {
+        if (eventType == null)
+            throw new ArgumentNullException(nameof(eventType));
+
+        Type type = eventType.GetType();
+        if (events.ContainsKey(type))
+            throw new ArgumentException($"Event of type {type} already added.");
+
+        events.Add(type, eventType);
+    }
+
+    public void RemoveEvent<T>(T eventType) where T : Event
+    {
+        if (eventType == null)
+            throw new ArgumentNullException(nameof(eventType));
+
+        Type type = eventType.GetType();
+        if (!events.ContainsKey(type))
+            throw new ArgumentException($"Event of type {type} does not exist.");
+
+        events.Remove(type);
+    }
+
+    public T GetEvent<T>() where T : Event
+    {
+        Type type = typeof(T);
+        if (!events.TryGetValue(type, out var eventType))
+            throw new KeyNotFoundException($"Event of type {type} not found.");
+
+        return (T)eventType;
+    }
+
+    public bool HasEvent<T>() where T : Event
+    {
+        return events.ContainsKey(typeof(T));
+    }
+
+    public void Subscribe<T>(Event.EventHandler eventHandler) where T : Event
+    {
+        if (events.TryGetValue(typeof(T), out var eventType))
+        {
+            eventType.Subscribe(eventHandler);
+        }
+    }
+
+    public void Unsubscribe<T>(Event.EventHandler eventHandler) where T : Event
+    {
+        if (events.TryGetValue(typeof(T), out var eventType))
+        {
+            eventType.Unsubscribe(eventHandler);
+        }
+    }
+
+    public void Notify<T>(EventData eventData) where T : Event
+    {
+        if (events.TryGetValue(typeof(T), out var eventType))
+        {
+            eventType.Notify(eventData);
+        }
+    }  
+}
+```
+The code is somewhat bloated because I was trying to achieve very specific behaviour. Wherein the concrete event classes 
+could provide very different behaviours thanks to the delegates implementation. The idea was that when a higher lever system
+uses the EventManager, it would provide the business logic as a delegate.   
+
+
 ---
 
 ## Exercise 3
