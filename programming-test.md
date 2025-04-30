@@ -30,7 +30,7 @@ for inter in range(1,101):
         print("-----")
 ```
 Bellow is the same solutions in Java, (another note  is that the boundaries of the random number are not defined explicitly,
-and I assume both boundaries to be exclusive) 
+and I assume both boundaries to be exclusive). 
 ```java
 import java.util.Random;
 class Main {
@@ -47,7 +47,9 @@ class Main {
   }
 }
 ```
-This solutions is an attempt to optimize for LOCs using Java and is 3 lines off Python solution
+This solutions is an attempt to optimize for LOCs using Java and is 3 lines off Python solution. It arguably deviates from 
+the specification, since in order to run correctly user needs to define an empty string as a command line argument, other
+wise array out of bounds exception would be thrown. 
 ```java
 import java.util.Random;
 class Main {
@@ -77,7 +79,7 @@ Since the subsequent question in my opinion incorrectly imply that MVC pattern i
 I also take a liberty to provide a definition of Architectural Pattern there. 
 
 While Architectural Patterns can similarly be described as template solution when developing software, the difference is in scale.
-Design patterns are limited to a particular problem withing a software product (overly coupled classes, specific requirement to
+Design patterns are limited to a particular problem withing usually a software component (overly coupled classes, specific requirement to
 a class behaviour, creation or structure.)
 Architectural Patterns however describe fundamental structure of the whole software system.
 
@@ -91,7 +93,7 @@ MVC stands for Model-View-Controller. As a name would imply, the whole software 
    - View is concerned with representation, as in UI presenting and retrieving information from user. 
    - Controller mediates the two, updating the View and the Model according to user input
 
-MVC can be very intuitively represented as a diagram
+MVC can be very intuitively represented as a diagram:
 ```mermaid
     flowchart TD
     U[User] -->|Sees| V[View]
@@ -111,7 +113,7 @@ related to user interface and data are not coupled and can be developed independ
    - Explain how you have used those patterns in the past and how they have solved your problem  
    - Use diagrams to explain the design patterns.
 
-I will provide example of each type of pattern
+I will provide one example of each type of pattern: creational, structural and behevioral.  
 
 Creational: Builder
 ```mermaid
@@ -136,7 +138,7 @@ classDiagram
     }
 ```
 Builder is very useful when you are presented with complex object that require complex, sometimes sequence sensitive 
-initialization. The pattern other then an object itself consists from Builder, Director interface and concrete directors.
+initialization. The pattern other than an object itself consists from Builder, Director interface and concrete directors.
 Builder contains the method necessary for initializing object, while concrete Directors contain predefined initialization
 sequences. One could also just use Builder as a type of Factory method. I used it for initializing an image compression algorithm workflow 
 from a number algorithm steps objects. This allowed for easy construction of any algorithm as long as individual data
@@ -236,7 +238,6 @@ public class VideoMetricMeasurementDirector implements AlgorithmDirector {
 }
 ```
 
-
 Structural: Facade
 
 ```mermaid
@@ -312,8 +313,8 @@ D --|> A
 B --|> A
 C --|> B
 ```
-Bellow the Java and C# code is provided for the presented UML diagram. Every public class is naturally would be localed 
-in a separate file in case of Java 
+Bellow the Java and C# code is provided for the presented UML diagram. Every public class naturally would be localed 
+in a separate file in case of Java. 
 ```java
 public abstract class ObjectA {
 
@@ -333,7 +334,7 @@ public class ObjectC extends ObjectB {
     public void PrintName(String message) {}
 }
 ```
-In case of C# putting every class in the same file is permissible, if .
+In case of C# putting every class in the same file is permissible, if however not recommended.
 ```cs
 using System;
 
@@ -383,7 +384,7 @@ ObjectA c = ObjectC();
 ```
 Another form of polymorphism is related to methods. Overriding referees to ability to replace the superclass method's functionality
 with functionality defined in the child class. When we call this method using the instance of child class we will call child's method.
-In this example overriding wasnt explicitly present, however if `private` modifier in `ObjectB` of method `PrintMessage` was replaced 
+In this example overriding was not explicitly present, however if `private` modifier in `ObjectB` of method `PrintMessage` was replaced 
 with `public` then `ObjectC` would be overriding this method of `ObjectB`. 
 
 Overloading referees to methods using the same name with different parameters, in the example that would be `PrintName(String message)` and

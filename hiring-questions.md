@@ -10,7 +10,7 @@
 
 3. **In case you are finishing your bachelor's studies, are you planning to enroll in a master's after?**  
    - Does not apply     
-   - I am currently a master student, I have plans to continue   
+   - I am currently a master student, I have possible plans to continue with PhD studies, however.  
 
 4. **In what timeframe are you available for the internship?**  
    - As early as 07.05.2025  
@@ -22,7 +22,7 @@
 6. **In case you are not available during the full period, what would be the preferable period?**  
    - 01.07.2025 
    - 30.09.2025
-   - Note: The exact meaning behind the question of unavailability is not entirely clear to me  
+   - Note: The exact meaning behind the question of unavailability is not entirely clear to me   
 
 7. **Are you a European citizen?**  
    > If not, please be aware that the hiring process might take up to 2 months due to work permit and Visa application processes.  
